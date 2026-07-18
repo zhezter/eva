@@ -23,16 +23,17 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
-      - name: Build Tauri app
-        run: npx tauri build
+      - name: Build frontend
+        run: npm run build
 
-      - name: Upload installer
-        if: always()
+      - name: Build Rust binary
+        run: cargo build --release
+        working-directory: src-tauri
+
+      - name: Upload exe
         uses: actions/upload-artifact@v4
         with:
           name: EVA-Windows
-          path: |
-            src-tauri/target/release/bundle/**/*.exe
-            src-tauri/target/release/eva.exe
-          if-no-files-found: warn
+          path: src-tauri/target/release/eva.exe
+          if-no-files-found: error
           compression-level: 0
